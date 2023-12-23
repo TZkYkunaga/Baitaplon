@@ -20,9 +20,9 @@ class khach_hang {
     int loai;
     int chi_so_cu;
     int chi_so_moi;
-    double don_gia;
-    double so_kw;
-    double tong_tien;
+    long double don_gia;
+    long double so_kw;
+    long double tong_tien;
 
     public:
     // Phương thức
@@ -37,19 +37,26 @@ class khach_hang {
         so_kw = 0;
         tong_tien = 0;
     }
-
     // Hàm khởi tạo có tham số
     khach_hang(string ma, string kv, int l, int csc, int csm) {
         ma_kh = ma;
         khu_vuc = kv;
-        loai = l;
+        if (kiem_tra_loai(l)) {
+            loai = l;
+        } else {
+            cout << "Loai khong hop le. Dat gia tri mac dinh 1.\n";
+            loai = 1;
+        }
         chi_so_cu = csc;
         chi_so_moi = csm;
         don_gia = tinh_don_gia();
         so_kw = tinh_so_Kw();
         tong_tien = tinh_tong_tien();
     }
-
+    //kiểm tra loại
+    bool kiem_tra_loai(int l) {
+        return (l >= 1 && l <= 2);//long's update
+    }
     // Hàm nhập thông tin khách hàng
     void nhap() {
         cout << "Nhap ma khach hang: ";
@@ -58,6 +65,11 @@ class khach_hang {
         cin >> khu_vuc;
         cout << "Nhap loai (1 hoac 2): ";
         cin >> loai;
+        //long's update
+        while (!kiem_tra_loai(loai)) {
+        cout << "Loai khong hop le. Hay nhap lai: ";
+        cin >> loai;
+        }
         cout << "Nhap chi so cu: ";
         cin >> chi_so_cu;
         cout << "Nhap chi so moi: ";
@@ -79,8 +91,8 @@ class khach_hang {
     }
 
     // Hàm tính đơn giá theo khu vực và loại
-    double tinh_don_gia() {
-        double dg = 0;
+    long double tinh_don_gia() {
+        long double dg = 0;
         char chu_dau = khu_vuc[0];        
         switch (chu_dau) {
         case 'A':
@@ -111,17 +123,17 @@ class khach_hang {
     }
 
     // Hàm tính số kw sử dụng
-    double tinh_so_Kw() {
+    long double tinh_so_Kw() {
         return chi_so_moi - chi_so_cu;
     }
 
     // Hàm tính tổng tiền phải trả
-    double tinh_tong_tien() {
+    long double tinh_tong_tien() {
          return so_kw * don_gia;
     }
 
     // Hàm lấy khu vực của khách hàng
-string lay_khu_vuc() {
+    string lay_khu_vuc() {
         return khu_vuc;
     }
 };
@@ -135,15 +147,6 @@ void nhap_ds(vector<khach_hang> &ds, int n) {
         ds.push_back(kh);
     }
 }
-
-// Hàm xuất danh sách khách hàng
-void xuat_ds(vector<khach_hang> ds) {
-    for (int i = 0; i < ds.size(); i++) {
-        cout << "Thong tin khach hang thu " << i + 1 << endl;
-        ds[i].xuat();
-    }
-}
-
 // Hàm xuất danh sách khách hàng theo khu vực
 void xuat_theo_kv(vector<khach_hang> ds, string kv) {
     cout << "Danh sach khach hang thuoc khu vuc " << kv << endl;
@@ -161,13 +164,22 @@ int main() {
     
     cout << "Nhap so luong khach hang: ";
     cin >> n;
-    nhap_ds(dsKH, n); // Nhập danh sách khách hàng
-    xuat_ds(dsKH); // Xuất danh sách khách hàng
-    xuat_theo_kv(dsKH, "A0"); // Xuất danh sách khách hàng thuộc khu vực A
-    xuat_theo_kv(dsKH, "B0"); // Xuất danh sách khách hàng thuộc khu vực B
-    xuat_theo_kv(dsKH, "C0"); // Xuất danh sách khách hàng thuộc khu vực C
-    xuat_theo_kv(dsKH, "D0"); // Xuất danh sách khách hàng thuộc khu vực D
-    xuat_theo_kv(dsKH, "E0"); // Xuất danh sách khách hàng thuộc khu vực E
+    if(n>0){
+        nhap_ds(dsKH, n); // Nhập danh sách khách hàng
+        cout<<"\n----------------------------------------------------------------------------\n";
+        xuat_theo_kv(dsKH, "A0"); // Xuất danh sách khách hàng thuộc khu vực A
+        cout<<"\n----------------------------------------------------------------------------\n";
+        xuat_theo_kv(dsKH, "B0"); // Xuất danh sách khách hàng thuộc khu vực B
+        cout<<"\n----------------------------------------------------------------------------\n";
+        xuat_theo_kv(dsKH, "C0"); // Xuất danh sách khách hàng thuộc khu vực C
+        cout<<"\n----------------------------------------------------------------------------\n";
+        xuat_theo_kv(dsKH, "D0"); // Xuất danh sách khách hàng thuộc khu vực D
+        cout<<"\n----------------------------------------------------------------------------\n";
+        xuat_theo_kv(dsKH, "E0"); // Xuất danh sách khách hàng thuộc khu vực E}
+            
+    }
+    else if(n == 0){cout << "Ban dua voi chung toi a?" ;}
+    else {cout<<"Ban nhap loi roi !";}
     
     return 0;
 }
