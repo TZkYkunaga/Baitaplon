@@ -1,20 +1,11 @@
-/*Công ty điện lực quản Khách hàng với các  thông tin:  mã khách  hàng, khu vực (có nhiều khu vực,  mỗi khu  vực  có nhiều loại với  đơn giá khác nhau),  chỉ số cũ, chỉ số mới.Ví  dụ về  khu vực:
-Bảng PL1.1 Dữ liệu đầu vào
-Loại	Khu vực
-	A0	B0	C0	D0	E0
-Loại 2	450	440	430	410	400
-Loại 1	500	460	450	420	410
-Xây dựng chương trình với các lớp cần thiết  để tính  được số kw khách  hàng sử dụng, tính được đơn giá  của khách  hàng,  tính  được tổng tiền mà  khách  hàng phải trả.
-*/
 #include <iostream>
 #include <vector>
 #include <string>
 using namespace std;
-
-// Khai báo lớp khach_hang để lưu trữ thông tin của một khách hàng
+// Khai báo class khach_hang de luu tru thông tin cua mot khách hàng
 class khach_hang {
     private:
-    // Thuộc tính
+    // Thuoc tính
     string ma_kh;
     string khu_vuc;
     int loai;
@@ -23,10 +14,9 @@ class khach_hang {
     long double don_gia;
     long double so_kw;
     long double tong_tien;
-
     public:
-    // Phương thức
-    // Hàm khởi tạo mặc định (không tham số)
+    // Phuong thuc
+    // Ham khoi tao mac dinh (khong tham so)
     khach_hang() {
         ma_kh = "";
         khu_vuc = "A0";
@@ -37,13 +27,14 @@ class khach_hang {
         so_kw = 0;
         tong_tien = 0;
     }
-    // Hàm khởi tạo có tham số
+    // Ham khoi tao co tham so
     khach_hang(string ma, string kv, int l, int csc, int csm) {
         ma_kh = ma;
         khu_vuc = kv;
         if (kiem_tra_loai(l)) {
             loai = l;
-        } else {
+        }
+        else {
             cout << "Loai khong hop le. Dat gia tri mac dinh 1.\n";
             loai = 1;
         }
@@ -53,33 +44,45 @@ class khach_hang {
         so_kw = tinh_so_Kw();
         tong_tien = tinh_tong_tien();
     }
-    //kiểm tra loại
+    //kiem tra loai
     bool kiem_tra_loai(int l) {
-        return (l >= 1 && l <= 2);//long's update
+        return (l >= 1 && l <= 2);
     }
-    // Hàm nhập thông tin khách hàng
+   
+    // Ham nhap thong tin khach hang
     void nhap() {
         cout << "Nhap ma khach hang: ";
         cin >> ma_kh;
         cout << "Nhap khu vuc (A0, B0, C0, D0, E0): ";
         cin >> khu_vuc;
+        while (khu_vuc[1] !='0' || (khu_vuc[0] != 'A' && khu_vuc[0] != 'B' && khu_vuc[0]!='C' && khu_vuc[0]!='D' && khu_vuc[0]!='E')) {
+            cout << "Khu vuc khong ton tai vui long nhap lai! "<<endl;
+            cout << "Nhap khu vuc (A0, B0, C0, D0, E0): ";
+            cin >> khu_vuc;
+        }
         cout << "Nhap loai (1 hoac 2): ";
         cin >> loai;
-        //long's update
         while (!kiem_tra_loai(loai)) {
-        cout << "Loai khong hop le. Hay nhap lai: ";
+        cout << "Loai khong hop le. Hay nhap lai loai (1 hoac 2): ";
         cin >> loai;
         }
-        cout << "Nhap chi so cu: ";
-        cin >> chi_so_cu;
-        cout << "Nhap chi so moi: ";
-        cin >> chi_so_moi;
+
+
+        while(true) {
+            cout << "Nhap chi so cu: ";
+            cin >> chi_so_cu;
+            cout << "Nhap chi so moi: ";
+            cin >> chi_so_moi;
+            if (chi_so_cu >= 0 and chi_so_moi > chi_so_cu) break;
+            else cout << "Chi so khong hop le. Vui long nhap lai." << endl;
+        }
         don_gia = tinh_don_gia();
         so_kw = tinh_so_Kw();
         tong_tien = tinh_tong_tien();
     }
 
-    // Hàm xuất thông tin khách hàng ra màn hình
+
+    // Ham xuat thong tin khach hang ra man hinh
     void xuat() {
         cout << "Ma khach hang: " << ma_kh << endl;
         cout << "Khu vuc: " << khu_vuc << loai << endl;
@@ -89,97 +92,141 @@ class khach_hang {
         cout << "So KW su dung: " << so_kw << endl;
         cout << "Tong tien phai tra: " << tong_tien << endl;
     }
-
-    // Hàm tính đơn giá theo khu vực và loại
+    // Ham tinh don gia theo khu vuc va loai
     long double tinh_don_gia() {
         long double dg = 0;
-        char chu_dau = khu_vuc[0];        
+        char chu_dau = khu_vuc[0];
         switch (chu_dau) {
         case 'A':
             if (loai == 1) dg = 500;
-            else if (loai == 2) { dg = 450;}
+            else if (loai == 2) dg = 450;
             break;
         case 'B':
             if (loai == 1) dg = 460;
-            else if (loai == 2) {dg = 440;}
+            else if (loai == 2) dg = 440;
             break;
         case 'C':
             if (loai == 1) dg = 450;
-            else if (loai == 2) {dg = 430;}
+            else if (loai == 2) dg = 430;
             break;
         case 'D':
             if (loai == 1) dg = 420;
-            else if (loai == 2) {dg = 410;}
+            else if (loai == 2) dg = 410;
             break;
         case 'E':
             if (loai == 1) dg = 410;
-            else if (loai == 2) {dg = 400;}
+            else if (loai == 2) dg = 400;
             break;
-        default:
-            dg = 0;
+
+        default: dg = 0;
         }
-        
+       
         return dg;
     }
-
-    // Hàm tính số kw sử dụng
+    // Ham tinh so kw
     long double tinh_so_Kw() {
         return chi_so_moi - chi_so_cu;
     }
-
-    // Hàm tính tổng tiền phải trả
+    // Ham tinh tong tien phai tra
     long double tinh_tong_tien() {
-         return so_kw * don_gia;
+        return so_kw * don_gia;
     }
-
-    // Hàm lấy khu vực của khách hàng
+    // Hàm lay khu vuc cua khách hàng
     string lay_khu_vuc() {
         return khu_vuc;
     }
+    bool trung_lap_ma_khach_hang(string ma) {
+        return ma == ma_kh;
+    }
+
+    // Phương thức lấy mã khách hàng
+    string lay_ma_khach_hang() {
+        return ma_kh;
+    }
 };
 
-// Hàm nhập danh sách n khách hàng
-void nhap_ds(vector<khach_hang> &ds, int n) {
-    for (int i = 0; i < n; i++) {
-        cout << "Nhap thong tin khach hang thu " << i + 1 << endl;
-        khach_hang kh; // gọi class với tên kh
-        kh.nhap();
-        ds.push_back(kh);
+
+// Ham nhap thong tin khach hang
+void nhap_tt(vector<khach_hang> &ds) {
+    khach_hang kh;
+    kh.nhap();
+
+//kiemtra nhap ma khach hang
+    while (true) {
+        bool trungLap = false;
+        for (int i = 0; i < ds.size(); i++) {
+            if (ds[i].trung_lap_ma_khach_hang(kh.lay_ma_khach_hang())) {
+                cout << "Nhan thay ma khach hang nay da duoc su dung. Vui long chon ma khac!" << endl;
+                trungLap = true;
+                kh.nhap();
+                break;
+            }
+        }
+
+        if (!trungLap) {
+            ds.push_back(kh);
+            break; // Kết thúc vòng lặp nếu không trùng lặp
+        }
     }
 }
-// Hàm xuất danh sách khách hàng theo khu vực
+
+
+// Ham xuat danh sach khach hang theo khu vuc
 void xuat_theo_kv(vector<khach_hang> ds, string kv) {
-    cout << "Danh sach khach hang thuoc khu vuc " << kv << endl;
     for (int i = 0; i < ds.size(); i++) {
         if (ds[i].lay_khu_vuc() == kv) {
+            cout << "----------------------------------------------------------------------------\n";
+            cout << "Danh sach khach hang thuoc khu vuc " << kv << endl;
             ds[i].xuat();
         }
     }
 }
 
-// Hàm chính
+
+void xoa_man_hinh() {
+    system("cls");
+}
+
+
 int main() {
-    vector<khach_hang> dsKH; // Danh sách khách hàng
-    int n; // Số lượng khách hàng
-    
-    cout << "Nhap so luong khach hang: ";
-    cin >> n;
-    if(n>0){
-        nhap_ds(dsKH, n); // Nhập danh sách khách hàng
-        cout<<"\n----------------------------------------------------------------------------\n";
-        xuat_theo_kv(dsKH, "A0"); // Xuất danh sách khách hàng thuộc khu vực A
-        cout<<"\n----------------------------------------------------------------------------\n";
-        xuat_theo_kv(dsKH, "B0"); // Xuất danh sách khách hàng thuộc khu vực B
-        cout<<"\n----------------------------------------------------------------------------\n";
-        xuat_theo_kv(dsKH, "C0"); // Xuất danh sách khách hàng thuộc khu vực C
-        cout<<"\n----------------------------------------------------------------------------\n";
-        xuat_theo_kv(dsKH, "D0"); // Xuất danh sách khách hàng thuộc khu vực D
-        cout<<"\n----------------------------------------------------------------------------\n";
-        xuat_theo_kv(dsKH, "E0"); // Xuất danh sách khách hàng thuộc khu vực E}
-            
+    xoa_man_hinh();
+    int n;
+    vector<khach_hang> dsKH; // Danh sach khach hang
+   
+    while (true) {
+        cout << "\n1. Nhap 1 de cung cap thong tin khach hang";
+        cout << "\n2. Nhap 2 de ket thuc" << endl;
+        cout << "Nhap: ";
+        cin >> n;
+        while (n != 1 and n != 2) {
+            cout << "Lua chon khong hop le. Vui long nhap lai: ";
+            cin >> n;
+        }
+       
+        if (n == 1) {
+            xoa_man_hinh();
+            cout << "\n\n\t\t=============Thong tin=============\n";
+            nhap_tt(dsKH); // Nhap danh sach khach hang
+        }
+
+
+        else {
+            break;
+        }
+
+
+    xoa_man_hinh();
+    cout << "\t\t\t=============Tiep tuc=============";
     }
-    else if(n == 0){cout << "Ban dua voi chung toi a?" ;}
-    else {cout<<"Ban nhap loi roi !";}
-    
+
+
+    xuat_theo_kv(dsKH, "A0"); // Xuat danh sach khach hang thuoc khu vuc A0
+    xuat_theo_kv(dsKH, "B0"); // Xuat danh sach khach hang thuoc khu vuc B0
+    xuat_theo_kv(dsKH, "C0"); // Xuat danh sach khach hang thuoc khu vuc C0
+    xuat_theo_kv(dsKH, "D0"); // Xuat danh sach khach hang thuoc khu vuc D0
+    xuat_theo_kv(dsKH, "E0"); // Xuat danh sach khach hang thuoc khu vuc E0
+    cout << "\n\n\t\t=============End=============";
+
+
     return 0;
 }
