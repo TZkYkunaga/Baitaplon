@@ -1,232 +1,212 @@
+/*. Công ty điện lực quản Khách hàng với các  thông tin:  mã khách  hàng, khu vực (có nhiều khu vực,  
+mỗi khu  vực  có nhiều loại với  đơn giá khác nhau),  chỉ số cũ, chỉ số mới.Ví  dụ về  khu vực:
+Bảng PL1.1 Dữ liệu đầu vào
+Loại	Khu vực
+	A0	B0	C0	D0	E0
+Loại 2	450	440	430	410	400
+Loại 1	500	460	450	420	410
+Xây dựng chương trình với các lớp cần thiết  để tính  được số kw khách  hàng sử dụng, tính được đơn giá  của khách  hàng,  
+tính  được tổng tiền mà  khách  hàng phải trả.
+*/
 #include <iostream>
-#include <vector>
-#include <string>
+#include <string.h>
 using namespace std;
-// Khai báo class khach_hang de luu tru thông tin cua mot khách hàng
-class khach_hang {
-    private:
-    // Thuoc tính
-    string ma_kh;
-    string khu_vuc;
-    int loai;
-    int chi_so_cu;
-    int chi_so_moi;
-    long double don_gia;
-    long double so_kw;
-    long double tong_tien;
-    public:
-    // Phuong thuc
-    // Ham khoi tao mac dinh (khong tham so)
-    khach_hang() {
-        ma_kh = "";
-        khu_vuc = "A0";
-        loai = 1;
-        chi_so_cu = 0;
-        chi_so_moi = 0;
-        don_gia = 0;
-        so_kw = 0;
-        tong_tien = 0;
-    }
-    // Ham khoi tao co tham so
-    khach_hang(string ma, string kv, int l, int csc, int csm) {
-        ma_kh = ma;
-        khu_vuc = kv;
-        if (kiem_tra_loai(l)) {
-            loai = l;
-        }
-        else {
-            cout << "Loai khong hop le. Dat gia tri mac dinh 1.\n";
-            loai = 1;
-        }
-        chi_so_cu = csc;
-        chi_so_moi = csm;
-        don_gia = tinh_don_gia();
-        so_kw = tinh_so_Kw();
-        tong_tien = tinh_tong_tien();
-    }
-    //kiem tra loai
-    bool kiem_tra_loai(int l) {
-        return (l >= 1 && l <= 2);
-    }
-   
-    // Ham nhap thong tin khach hang
-    void nhap() {
-        cout << "Nhap ma khach hang: ";
-        cin >> ma_kh;
-        cout << "Nhap khu vuc (A0, B0, C0, D0, E0): ";
-        cin >> khu_vuc;
-        while (khu_vuc[1] !='0' || (khu_vuc[0] != 'A' && khu_vuc[0] != 'B' && khu_vuc[0]!='C' && khu_vuc[0]!='D' && khu_vuc[0]!='E')) {
+const int sizeds = 10000;
+struct khach_hang
+{
+    string makh;
+    string khuvuc;
+    double chisocu; 
+    double chisomoi;
+    int loaikhuvuc;
+    
+    void laythongtin(){
+        cout<<"Nhap ma khach hang: ";
+        cin>>makh;
+        cout<<"Nhap khu vuc(A0, B0, C0, D0, E0): ";
+        cin>>khuvuc;
+        while (khuvuc[1] !='0' || (khuvuc[0] != 'A' && khuvuc[0] != 'B' && khuvuc[0]!='C' && khuvuc[0]!='D' && khuvuc[0]!='E')) {
             cout << "Khu vuc khong ton tai vui long nhap lai! "<<endl;
             cout << "Nhap khu vuc (A0, B0, C0, D0, E0): ";
-            cin >> khu_vuc;
+            cin >> khuvuc;
         }
-        cout << "Nhap loai (1 hoac 2): ";
-        cin >> loai;
-        while (!kiem_tra_loai(loai)) {
+        cout<<"Nhap loai khu vuc: ";
+        cin>>loaikhuvuc;
+        while (!kiemtraloai(loaikhuvuc)) {
         cout << "Loai khong hop le. Hay nhap lai loai (1 hoac 2): ";
-        cin >> loai;
+        cin >> loaikhuvuc;
         }
+        cout<<"Chi so cu: ";
+        cin>>chisocu;
+        cout<<"chi so moi: ";
+        cin>>chisomoi;
 
-
-        while(true) {
-            cout << "Nhap chi so cu: ";
-            cin >> chi_so_cu;
-            cout << "Nhap chi so moi: ";
-            cin >> chi_so_moi;
-            if (chi_so_cu >= 0 and chi_so_moi > chi_so_cu) break;
-            else cout << "Chi so khong hop le. Vui long nhap lai." << endl;
-        }
-        don_gia = tinh_don_gia();
-        so_kw = tinh_so_Kw();
-        tong_tien = tinh_tong_tien();
     }
-
-
-    // Ham xuat thong tin khach hang ra man hinh
-    void xuat() {
-        cout << "Ma khach hang: " << ma_kh << endl;
-        cout << "Khu vuc: " << khu_vuc << loai << endl;
-        cout << "Chi so cu: " << chi_so_cu << endl;
-        cout << "Chi so moi: " << chi_so_moi << endl;
-        cout << "Don gia: " << don_gia << endl;
-        cout << "So KW su dung: " << so_kw << endl;
-        cout << "Tong tien phai tra: " << tong_tien << endl;
+    bool kiemtraloai(int l) {
+        return (l >= 1 && l <= 2);
     }
-    // Ham tinh don gia theo khu vuc va loai
-    long double tinh_don_gia() {
-        long double dg = 0;
-        char chu_dau = khu_vuc[0];
-        switch (chu_dau) {
+    double tinhsokw(){
+        return chisomoi-chisocu;
+    }
+    double tinhsotiendien()
+    {
+        double sotiendien=0;
+
+
+        switch (khuvuc[0])
+        {
         case 'A':
-            if (loai == 1) dg = 500;
-            else if (loai == 2) dg = 450;
+            sotiendien =(loaikhuvuc==1) ?tinhsokw()*500 :tinhsokw()*450;
             break;
         case 'B':
-            if (loai == 1) dg = 460;
-            else if (loai == 2) dg = 440;
+            sotiendien =(loaikhuvuc==1) ? tinhsokw() * 460: tinhsokw()*440;
             break;
         case 'C':
-            if (loai == 1) dg = 450;
-            else if (loai == 2) dg = 430;
+            sotiendien =(loaikhuvuc ==1) ? tinhsokw() * 450 : tinhsokw()*430;
             break;
         case 'D':
-            if (loai == 1) dg = 420;
-            else if (loai == 2) dg = 410;
+            sotiendien=(loaikhuvuc == 1) ? tinhsokw() * 420: tinhsokw() * 410;
             break;
         case 'E':
-            if (loai == 1) dg = 410;
-            else if (loai == 2) dg = 400;
+            sotiendien=(loaikhuvuc == 1) ? tinhsokw() * 410 : tinhsokw() * 400;
             break;
-
-        default: dg = 0;
+        default:
+            cout << "Khu vuc nay khong hop le !";
+            break;
         }
-       
-        return dg;
-    }
-    // Ham tinh so kw
-    long double tinh_so_Kw() {
-        return chi_so_moi - chi_so_cu;
-    }
-    // Ham tinh tong tien phai tra
-    long double tinh_tong_tien() {
-        return so_kw * don_gia;
-    }
-    // Hàm lay khu vuc cua khách hàng
-    string lay_khu_vuc() {
-        return khu_vuc;
-    }
-    bool trung_lap_ma_khach_hang(string ma) {
-        return ma == ma_kh;
-    }
 
-    // Phương thức lấy mã khách hàng
-    string lay_ma_khach_hang() {
-        return ma_kh;
+        return sotiendien;
+    }
+    void xuatthongtin(){
+        cout<<"Ma khach hang: "<< makh <<endl;
+        cout<<"So kw dien da su dung: "<<tinhsokw()<<endl;
+        cout<<"Khach hang thuoc khu vuc "<<khuvuc<<" loai "<<loaikhuvuc<<endl;
+        cout<<"So tien dien can phai tra la: "<<tinhsotiendien()<<endl;
+    }
+    void suathongtinkhachhang(){
+        string khachhangcantim;
+        cout<<"Hay nhap ma khach hang ban muon sua: ";
+        cin>>khachhangcantim;
+            if (khachhangcantim==makh){
+                cout<<"Nhap khu vuc(A0, B0, C0, D0, E0): ";
+                cin>>khuvuc;
+                while (khuvuc[1] !='0' || (khuvuc[0] != 'A' && khuvuc[0] != 'B' && khuvuc[0]!='C' && khuvuc[0]!='D' && khuvuc[0]!='E')) {
+                    cout << "Khu vuc khong ton tai vui long nhap lai! "<<endl;
+                    cout << "Nhap khu vuc (A0, B0, C0, D0, E0): ";
+                    cin >> khuvuc;
+                }
+                cout<<"Nhap loai khu vuc: ";
+                cin>>loaikhuvuc;
+                while (!kiemtraloai(loaikhuvuc)) {
+                cout << "Loai khong hop le. Hay nhap lai loai (1 hoac 2): ";
+                cin >> loaikhuvuc;
+                }
+                cout<<"Chi so cu: ";
+                cin>>chisocu;
+                cout<<"chi so moi: ";
+                cin>>chisomoi;
+                return;
+                }
+        cout << "Khong tim thay khach hang co ma "<<khachhangcantim<< " de xoa."<<endl;
+    }
+    void timkiemkhachang() {
+    string khachhangcantim;
+    cout << "Nhap ma khach hang ban muon tim: ";
+    cin >> khachhangcantim;
+    if (makh == khachhangcantim) {
+        xuatthongtin();
+        return; // Kết thúc hàm sau khi xuất thông tin
+    }
+    cout << "Khong tim thay khach hang co ma "<< khachhangcantim<<" de xoa." << endl;
     }
 };
 
-
-// Ham nhap thong tin khach hang
-void nhap_tt(vector<khach_hang> &ds) {
-    khach_hang kh;
-    kh.nhap();
-
-//kiemtra nhap ma khach hang
-    while (true) {
-        bool trungLap = false;
-        for (int i = 0; i < ds.size(); i++) {
-            if (ds[i].trung_lap_ma_khach_hang(kh.lay_ma_khach_hang())) {
-                cout << "Nhan thay ma khach hang nay da duoc su dung. Vui long chon ma khac!" << endl;
-                trungLap = true;
-                kh.nhap();
+void hoatdong(khach_hang *dskhachhang){
+    char option;
+    int n=0;
+    cout<<"1 Nhap thong tin khac hang\n"
+    <<"2 Xuat ra thong tin cac khach hang\n"
+    <<"3 chinh sua thong tin khach hang\n"
+    <<"4 tim kiem khach hang\n"
+    <<"5 ket thuc chuong trinh\n";
+    cout << "Vui long chon cac phuong an tren: ";
+    cin>>option;
+    while (option != '5') {
+        switch (option) {
+        case '1':
+            if (n < sizeds)
+            {
+                dskhachhang[n].laythongtin();
+                for (int i = 0; i < n; ++i){
+                    if(dskhachhang[n].makh==dskhachhang[i].makh){
+                        cout<<"Ma khach hang nay da duoc su su vui long nhap lai!"<<endl;
+                        dskhachhang[n].laythongtin();
+                        break;
+                    }
+                    
+                }
+                n++;
+            }
+            else
+            {
+            cout<<"Danh sach da day. Khong the them khach hang moi.\n";
+            }
+            break;
+        case '2':
+            if(n==0){
+                cout<<"Van chua co du lieu khach hang! "<<endl;
                 break;
             }
-        }
-
-        if (!trungLap) {
-            ds.push_back(kh);
-            break; // Kết thúc vòng lặp nếu không trùng lặp
-        }
-    }
-}
-
-
-// Ham xuat danh sach khach hang theo khu vuc
-void xuat_theo_kv(vector<khach_hang> ds, string kv) {
-    for (int i = 0; i < ds.size(); i++) {
-        if (ds[i].lay_khu_vuc() == kv) {
-            cout << "----------------------------------------------------------------------------\n";
-            cout << "Danh sach khach hang thuoc khu vuc " << kv << endl;
-            ds[i].xuat();
-        }
-    }
-}
-
-
-void xoa_man_hinh() {
-    system("cls");
-}
-
-
-int main() {
-    xoa_man_hinh();
-    int n;
-    vector<khach_hang> dsKH; // Danh sach khach hang
-   
-    while (true) {
-        cout << "\n1. Nhap 1 de cung cap thong tin khach hang";
-        cout << "\n2. Nhap 2 de ket thuc" << endl;
-        cout << "Nhap: ";
-        cin >> n;
-        while (n != 1 and n != 2) {
-            cout << "Lua chon khong hop le. Vui long nhap lai: ";
-            cin >> n;
-        }
-       
-        if (n == 1) {
-            xoa_man_hinh();
-            cout << "\n\n\t\t=============Thong tin=============\n";
-            nhap_tt(dsKH); // Nhap danh sach khach hang
-        }
-
-
-        else {
+            for (int i = 0; i < n; ++i)
+            {   cout<<"\n----------------------------------------------------\n";
+                dskhachhang[i].xuatthongtin();
+                cout<<"\n----------------------------------------------------\n";
+            }
+            break;
+        case '3':
+            for (int i = 0; i < n; ++i)
+            {   cout<<"\n----------------------------------------------------\n";
+                dskhachhang[i].suathongtinkhachhang();
+                cout<<"\n----------------------------------------------------\n";
+            }
+            break;
+        case '4':
+            for (int i = 0; i < n; ++i)
+            {   cout<<"\n----------------------------------------------------\n";
+                dskhachhang[i].timkiemkhachang();
+                cout<<"\n----------------------------------------------------\n";
+            }
+            break;
+        case '5':
+            cout<<"ket thuc chuong trinh";
+            return ;
+        default:
+            cout << "Lua chon cua ban khong co trong cac phuong an\n";
             break;
         }
-
-
-    xoa_man_hinh();
-    cout << "\t\t\t=============Tiep tuc=============";
+        cout<<"1 Nhap thong tin khac hang\n"
+        <<"2 Xuat ra thong tin cac khach hang\n"
+        <<"3 chinh sua thong tin khach hang\n"
+        <<"4 tim kiem khach hang\n"
+        <<"5 ket thuc chuong trinh\n";
+        cout << "Vui long chon cac phuong an tren: ";
+        cin >> option;
     }
-
-
-    xuat_theo_kv(dsKH, "A0"); // Xuat danh sach khach hang thuoc khu vuc A0
-    xuat_theo_kv(dsKH, "B0"); // Xuat danh sach khach hang thuoc khu vuc B0
-    xuat_theo_kv(dsKH, "C0"); // Xuat danh sach khach hang thuoc khu vuc C0
-    xuat_theo_kv(dsKH, "D0"); // Xuat danh sach khach hang thuoc khu vuc D0
-    xuat_theo_kv(dsKH, "E0"); // Xuat danh sach khach hang thuoc khu vuc E0
-    cout << "\n\n\t\t=============End=============";
-
-
+}
+int main(){
+    cout << "  _____                    _______ _    ____                      _      _   _____  _              _                \n"
+                 " / ____|                  |__   __(_)  / __ \\                    | |    (_) |  __ \\(_)            | |               \n"
+                 "| |     ___  _ __   __ _     | |   _  | |  | |_   _  __ _ _ __   | |     _  | |  | |_  ___ _ __   | |    _   _  ___ \n"
+                 "| |    / _ \\| '_ \\ / _` |    | |  | | | |  | | | | |/ _` | '_ \\  | |    | | | |  | | |/ _ \\ '_ \\  | |   | | | |/ __|\n"
+                 "| |___| (_) | | | | (_| |    | |  | | | |__| | |_| | (_| | | | | | |____| | | |__| | |  __/ | | | | |___| |_| | (__ \n"
+                 " \\_____\\___/|_| |_|\\__, |    |_|  |_|  \\___/ \\__,_|\\__,_|_| |_| |______|_| |_____/|_|\\___|_| |_| |______\\__,_|\\___|\n"
+                 "                    __/ |                                                                                           \n"
+                 "                   |___/                                                                                            \n";
+    cout<<"khuvuc	A0	B0	C0	D0	E0\n"
+    <<"Loai 2	450	440	430	410	400\n"
+    <<"Loai 1	500	460	450	420	410\n";
+    khach_hang *dskhachhang = new khach_hang[sizeds]; 
+    hoatdong(dskhachhang);
+    delete [] dskhachhang;
     return 0;
 }
